@@ -1,0 +1,26 @@
+server:
+  port: 8086
+logging:
+  level:
+    org.springframework.web: INFO
+    org.hibernate: INFO
+spring:
+  application:
+    name: songdata
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:star-songs-data
+    username: sa
+    password:
+  h2:
+    console:
+      # Do not enable in production!
+      enabled: false
+      path: /console
+      settings:
+        trace: false
+        web-allow-others: false
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
