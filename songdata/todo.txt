@@ -1,0 +1,5 @@
+Testing
+Documentation
+Update index.html
+Build dto classes into a jar for client use
+Add toString, hash and equals methods to dto classes

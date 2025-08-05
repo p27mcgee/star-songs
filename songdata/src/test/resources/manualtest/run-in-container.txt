@@ -1,0 +1,1 @@
+docker run -it -p8086:8086 pmcgee/starsongs.songdata:0.1.0
