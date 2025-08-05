@@ -1,0 +1,11 @@
+server:
+  http:
+    port: 8080
+spring:
+  application:
+    name: webui
+  groovy:
+    template:
+      enabled: true
+songdata:
+  songs-url: http://localhost:8086/v1/songs
