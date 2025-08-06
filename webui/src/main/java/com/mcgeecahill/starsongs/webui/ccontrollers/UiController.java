@@ -5,6 +5,7 @@ import com.mcgeecahill.starsongs.songdata.dto.SongDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,21 @@ import java.util.stream.Collectors;
 public class UiController {
 
     private static final Logger log = LoggerFactory.getLogger(UiController.class);
-    private static final String title = "Star Songs";
+
+    private String title = "Star Songs";
+
+    @Value("${songdata.host}")
+    private String songdataHost;
+
+    @Value("${songdata.port}")
+    private String songdataPort;
+
+    @Value("${songdata.songs.path}")
+    private String songsPath;
+
+    @Value("${songdata.artists.path}")
+    private String artistsPath;
+
 
     @Autowired
     public RestTemplate restTemplate;
@@ -46,21 +61,22 @@ public class UiController {
     }
 
     private List<SongDto> getAllSongs() {
-        ResponseEntity<List<SongDto>> response = restTemplate.exchange("http://localhost:8086/v1/songs", HttpMethod.GET, null,
+        final String songsUrl = "http://" + songdataHost + ":" + songdataPort + songsPath;
+        ResponseEntity<List<SongDto>> response = restTemplate.exchange(songsUrl, HttpMethod.GET, null,
                 new ParameterizedTypeReference<>() {
                 });
         log.debug("Song list: {}", response.getBody());
         return response.getBody();
     }
 
-
     private Map<Integer, ArtistDto> getArtists(final Set<Integer> artistIds) {
+        final String artistsUrl = "http://" + songdataHost + ":" + songdataPort + artistsPath;
         final Map<Integer, ArtistDto> artistMapById = new HashMap<>();
         for (final Integer id : artistIds) {
             if (id != null) {
                 try {
                     final ResponseEntity<ArtistDto> artistResp = restTemplate.exchange(
-                            "http://localhost:8086/v1/artists/" + id,
+                            artistsUrl + "/" + id,
                             HttpMethod.GET, null, ArtistDto.class);
                     artistMapById.put(id, artistResp.getBody());
                 } catch (final HttpClientErrorException e) {
