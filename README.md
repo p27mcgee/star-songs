@@ -21,6 +21,9 @@ webui> \$ ./gradlew bootBuildImage
 
 star-songs> \$ docker compose up
 
-Browse http://localhost. (note port 80)
+Browse http://localhost (note port 80)
 
-star-songs> \$ docker compose down to shutdown
+
+## Shutdown Docker Compose
+
+star-songs> \$ docker compose down
