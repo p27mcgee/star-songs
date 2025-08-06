@@ -1,6 +1,9 @@
 server:
   http:
     port: 8080
+logging:
+  level:
+    org.springframework.web: INFO
 spring:
   application:
     name: webui
@@ -8,4 +11,11 @@ spring:
     template:
       enabled: true
 songdata:
-  songs-url: http://localhost:8086/v1/songs
+  # if not running in docker compose use localhost
+  # e.g. ./gradlew bootRun --args='--songdata.host=localhost'
+  host: songdata
+  port: 8086
+  songs:
+    path: /v1/songs
+  artists:
+    path: /v1/artists
