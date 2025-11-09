@@ -1,0 +1,7 @@
+ec2-54-234-190-2.compute-1.amazonaws.com
+
+
+http://star-songs.mcgeecahill.com
+    => 54.234.190.2
+
+https://github.com/p27mcgee/star-songs
