@@ -1,29 +1,71 @@
 # star-songs
 Access and Update a Collection of Celestial Themed Music
 
-## To run projects from command line
+## Architecture
 
-songdata> \$ ./gradlew bootRun
+This project consists of two microservices:
+- **songdata**: Java/Spring Boot REST API backend (port 8086)
+- **webui**: React frontend + Spring Boot BFF proxy (port 8080)
 
-webui> \$ ./gradlew bootRun  --args='--songdata.host=localhost'
+The webui uses React with Vite for the frontend, served by Spring Boot which proxies API requests to songdata.
+
+## Development
+
+### Run projects from command line
+
+Start the backend service:
+```bash
+songdata> ./gradlew bootRun
+```
+
+Start the web UI service (in a separate terminal):
+```bash
+webui> ./gradlew bootRun --args='--songdata.host=localhost'
+```
 
 Browse http://localhost:8080
 
+### React Development
 
-## To build docker images
+For faster React development with hot module replacement:
 
-songdata> \$ ./gradlew bootBuildImage
+1. Start the songdata backend:
+   ```bash
+   songdata> ./gradlew bootRun
+   ```
 
-webui> \$ ./gradlew bootBuildImage
+2. Start the webui Spring Boot backend:
+   ```bash
+   webui> ./gradlew bootRun --args='--songdata.host=localhost'
+   ```
 
+3. Start the Vite dev server (in a separate terminal):
+   ```bash
+   webui/frontend> npm run dev
+   ```
 
-## Run locally with Docker Compose
+   Then browse http://localhost:5173 (Vite dev server with HMR)
 
-star-songs> \$ docker compose up
+## Build Docker Images
+
+The React app is automatically built as part of the Gradle build:
+
+```bash
+songdata> ./gradlew bootBuildImage
+
+webui> ./gradlew bootBuildImage
+```
+
+## Run with Docker Compose
+
+```bash
+star-songs> docker compose up
+```
 
 Browse http://localhost (note port 80)
 
-
 ## Shutdown Docker Compose
 
-star-songs> \$ docker compose down
+```bash
+star-songs> docker compose down
+```

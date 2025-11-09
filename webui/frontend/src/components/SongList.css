@@ -1,0 +1,72 @@
+.song-list-container {
+  min-height: 100vh;
+  padding: 2rem;
+  color: LemonChiffon;
+}
+
+.title {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.table-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: rgba(13, 9, 56, 0.7);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.song-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.song-table thead {
+  border-bottom: 2px solid LemonChiffon;
+}
+
+.song-table th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.song-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 250, 205, 0.2);
+}
+
+.song-table tbody tr:hover {
+  background-color: rgba(255, 250, 205, 0.1);
+}
+
+.song-link {
+  color: LemonChiffon;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.song-link:hover {
+  color: #fff;
+  text-shadow: 0 0 8px LemonChiffon;
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.5rem;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error {
+  color: #ff6b6b;
+}

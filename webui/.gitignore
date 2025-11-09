@@ -36,3 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 *.code-workspace
+
+### Node and React ###
+frontend/node_modules/
+frontend/dist/
+src/main/resources/static/index.html
+src/main/resources/static/assets/
+src/main/resources/static/vite.svg

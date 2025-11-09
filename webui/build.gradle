@@ -19,7 +19,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-groovy-templates'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-devtools'
@@ -30,3 +29,22 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// Task to install npm dependencies
+task npmInstall(type: Exec) {
+    workingDir 'frontend'
+    commandLine 'npm', 'install'
+}
+
+// Task to build React app
+task npmBuild(type: Exec) {
+    dependsOn npmInstall
+    workingDir 'frontend'
+    commandLine 'npm', 'run', 'build'
+}
+
+// Ensure React is built before Spring Boot processes resources
+processResources.dependsOn npmBuild
+
+// Ensure React is built before creating the bootBuildImage
+bootBuildImage.dependsOn npmBuild

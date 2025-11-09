@@ -1,3 +1,10 @@
 .DS_Store
 
 *.code-workspace
+
+# Node modules and React build artifacts
+**/node_modules/
+**/dist/
+webui/src/main/resources/static/index.html
+webui/src/main/resources/static/assets/
+webui/src/main/resources/static/vite.svg

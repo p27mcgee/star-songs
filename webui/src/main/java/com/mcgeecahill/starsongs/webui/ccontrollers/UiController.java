@@ -9,24 +9,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-@Controller
+/**
+ * API Controller that proxies requests to the songdata service.
+ * This acts as a Backend-for-Frontend (BFF) layer.
+ */
+@RestController
+@RequestMapping("/api")
 public class UiController {
 
     private static final Logger log = LoggerFactory.getLogger(UiController.class);
-
-    private String title = "Star Songs";
 
     @Value("${songdata.host}")
     private String songdataHost;
@@ -40,53 +39,45 @@ public class UiController {
     @Value("${songdata.artists.path}")
     private String artistsPath;
 
-
     @Autowired
     public RestTemplate restTemplate;
 
-    @GetMapping(value = {"/", "/index"})
-    public ModelAndView index() {
-        final List<SongDto> songs = getAllSongs();
-        final Set<Integer> artistIds = songs.stream()
-                .map(SongDto::getArtistId).collect(Collectors.toSet());
-        final Map<Integer, ArtistDto> artistMapById = getArtists(artistIds);
-        return new ModelAndView(
-                "index",
-                Map.of(
-                        "pageTitle", title,
-                        "songs", songs,
-                        "artistMapById", artistMapById
-                )
-        );
-    }
-
-    private List<SongDto> getAllSongs() {
+    /**
+     * Proxy endpoint to get all songs from the songdata service
+     */
+    @GetMapping("/songs")
+    public List<SongDto> getAllSongs() {
         final String songsUrl = "http://" + songdataHost + ":" + songdataPort + songsPath;
-        ResponseEntity<List<SongDto>> response = restTemplate.exchange(songsUrl, HttpMethod.GET, null,
-                new ParameterizedTypeReference<>() {
-                });
+        log.info("Proxying request to: {}", songsUrl);
+
+        ResponseEntity<List<SongDto>> response = restTemplate.exchange(
+                songsUrl,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<SongDto>>() {}
+        );
+
         log.debug("Song list: {}", response.getBody());
         return response.getBody();
     }
 
-    private Map<Integer, ArtistDto> getArtists(final Set<Integer> artistIds) {
-        final String artistsUrl = "http://" + songdataHost + ":" + songdataPort + artistsPath;
-        final Map<Integer, ArtistDto> artistMapById = new HashMap<>();
-        for (final Integer id : artistIds) {
-            if (id != null) {
-                try {
-                    final ResponseEntity<ArtistDto> artistResp = restTemplate.exchange(
-                            artistsUrl + "/" + id,
-                            HttpMethod.GET, null, ArtistDto.class);
-                    artistMapById.put(id, artistResp.getBody());
-                } catch (final HttpClientErrorException e) {
-                    log.warn("http://localhost:8086/v1/artists/{} returns HTTP status {}", id, e.getStatusCode());
-                    log.warn(e.getResponseBodyAsString());
-                }
-            }
-        }
+    /**
+     * Proxy endpoint to get a specific artist by ID from the songdata service
+     */
+    @GetMapping("/artists/{id}")
+    public ArtistDto getArtist(@PathVariable Integer id) {
+        final String artistUrl = "http://" + songdataHost + ":" + songdataPort + artistsPath + "/" + id;
+        log.info("Proxying request to: {}", artistUrl);
 
-        return artistMapById;
+        ResponseEntity<ArtistDto> response = restTemplate.exchange(
+                artistUrl,
+                HttpMethod.GET,
+                null,
+                ArtistDto.class
+        );
+
+        log.debug("Artist: {}", response.getBody());
+        return response.getBody();
     }
 
 }
