@@ -1,13 +1,13 @@
 services:
   webui:
-    image: "webui:0.1.1"
+    image: "pmcgee/starsongs.webui:0.1.1"
     ports:
       - "80:8080"
     networks:
       - front-tier
       - back-tier
   songdata:
-    image: "songdata:0.1.1"
+    image: "pmcgee/starsongs.songdata:0.1.1"
     ports:
       - "8086:8086"
     networks:

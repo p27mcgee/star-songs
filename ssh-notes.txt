@@ -1,0 +1,2 @@
+
+ssh -i '~/.ssh/pmcgee-ami.pem' ubuntu@ec2-54-234-190-2.compute-1.amazonaws.com
