@@ -5,67 +5,103 @@ Access and Update a Collection of Celestial Themed Music
 
 This project consists of two microservices:
 - **songdata**: Java/Spring Boot REST API backend (port 8086)
-- **webui**: React frontend + Spring Boot BFF proxy (port 8080)
+- **nextui**: Next.js 16 frontend with TypeScript and Server Components (port 3000)
 
-The webui uses React with Vite for the frontend, served by Spring Boot which proxies API requests to songdata.
+The nextui application communicates directly with the songdata API using modern Next.js patterns including:
+- App Router with React Server Components
+- Server-side data fetching
+- TypeScript for type safety
+- TailwindCSS for styling
+- Vitest for testing
 
 ## Development
 
 ### Run projects from command line
 
-Start the backend service:
-```bash
-songdata> ./gradlew bootRun
-```
-
-Start the web UI service (in a separate terminal):
-```bash
-webui> ./gradlew bootRun --args='--songdata.host=localhost'
-```
-
-Browse http://localhost:8080
-
-### React Development
-
-For faster React development with hot module replacement:
-
 1. Start the songdata backend:
    ```bash
-   songdata> ./gradlew bootRun
+   cd songdata
+   ./gradlew bootRun
    ```
 
-2. Start the webui Spring Boot backend:
+2. In a separate terminal, start the Next.js frontend:
    ```bash
-   webui> ./gradlew bootRun --args='--songdata.host=localhost'
+   cd nextui
+   npm install  # First time only
+   npm run dev
    ```
 
-3. Start the Vite dev server (in a separate terminal):
-   ```bash
-   webui/frontend> npm run dev
-   ```
+3. Browse http://localhost:3000
 
-   Then browse http://localhost:5173 (Vite dev server with HMR)
+### Testing
+
+Run tests for the Next.js application:
+```bash
+cd nextui
+npm test              # Run tests in watch mode
+npm run test:ui       # Run tests with UI
+npm run test:coverage # Run tests with coverage report
+```
+
+### Legacy webui (React + Spring Boot)
+
+The original webui project with React/Vite served by Spring Boot is still available:
+
+1. Start songdata: `cd songdata && ./gradlew bootRun`
+2. Start webui: `cd webui && ./gradlew bootRun --args='--songdata.host=localhost'`
+3. Browse http://localhost:8080
+
+For faster React development with HMR:
+```bash
+cd webui/frontend
+npm run dev  # Browse http://localhost:5173
+```
 
 ## Build Docker Images
 
-The React app is automatically built as part of the Gradle build:
-
+### Next.js (nextui)
 ```bash
-songdata> ./gradlew bootBuildImage
+cd nextui
+docker build -t pmcgee/starsongs.nextui:0.2.0 .
+```
 
-webui> ./gradlew bootBuildImage
+### SongData API
+```bash
+cd songdata
+./gradlew bootBuildImage
+```
+
+### Legacy webui
+```bash
+cd webui
+./gradlew bootBuildImage
 ```
 
 ## Run with Docker Compose
 
+The docker-compose configuration runs nextui (Next.js) and songdata:
+
 ```bash
-star-songs> docker compose up
+docker compose up --build
 ```
 
-Browse http://localhost (note port 80)
+Browse http://localhost (note port 80, maps to nextui on port 3000)
+
+To use the legacy webui instead, edit `compose.yaml` and replace the nextui service with webui.
 
 ## Shutdown Docker Compose
 
 ```bash
-star-songs> docker compose down
+docker compose down
+```
+
+## Project Structure
+
+```
+star-songs/
+├── songdata/          # Spring Boot REST API (Java 17)
+├── nextui/            # Next.js 16 frontend (TypeScript, recommended)
+├── webui/             # Legacy React + Spring Boot frontend
+├── compose.yaml       # Docker Compose configuration
+└── README.md
 ```
