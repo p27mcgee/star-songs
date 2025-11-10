@@ -1,11 +1,18 @@
 services:
-  webui:
-    image: "pmcgee/starsongs.webui:0.1.1"
+  nextui:
+    build:
+      context: ./nextui
+      dockerfile: Dockerfile
+    image: "pmcgee/starsongs.nextui:0.2.0"
     ports:
-      - "80:8080"
+      - "80:3000"
+    environment:
+      - NEXT_PUBLIC_SONGDATA_API_URL=http://songdata:8086
     networks:
       - front-tier
       - back-tier
+    depends_on:
+      - songdata
   songdata:
     image: "pmcgee/starsongs.songdata:0.1.1"
     ports:
